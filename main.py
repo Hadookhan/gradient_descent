@@ -1,18 +1,18 @@
 from gradient_descent import f, nabla_f, learn
 from contour import plot
+import random as rand
 
 # Initial random starting points
-x, y = 5, -4
+x, y = rand.randint(-5,5), rand.randint(-5,5)
+
 # Learning rate
 # Will help function converge to the minima
-alpha = 0.1
+alpha = 0.01
     
 def main():
     history = []
 
-    nabla_x, nabla_y = nabla_f(x,y)
-
-    learn(alpha,x,y,nabla_x,nabla_y,history)
+    learn(alpha,x,y,history)
 
     for i in range(len(history)):
         cur_x = history[i][0]
