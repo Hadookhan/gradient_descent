@@ -11,14 +11,14 @@ X, Y = np.meshgrid(x_vals,y_vals)
 
 Z = f(X,Y)
 
-def plot(history):
+def plot(history, title):
 
     fig, ax = plt.subplots()
     ax.contour(X,Y,Z,levels=20)
 
     ax.set_xlabel("x")
     ax.set_ylabel("y")
-    ax.set_title("Gradient Descent Path")
+    ax.set_title(f"Gradient Descent Path ({title})")
 
     line, = ax.plot([],[],'r-o')
     point, = ax.plot([],[],'bo')

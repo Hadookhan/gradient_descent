@@ -63,6 +63,58 @@ def momentum_learn(alpha,beta,x,y,history,max_iters=10000):
 
     return x,y
 
+# ADAM (Adaptive Moment Estimation)
+# m_t = \beta_1 m_{t-1} + (1-\beta_1)g_t
+# v_t = \beta_2 v_{t-1} + (1-\beta_2)g^2_t
+# Correction step:
+#\hat{m}_t=\frac{m_t}{1-\beta^t_1}
+#\hat{v}_t=\frac{v_t}{1-\beta^t_2}
+# Parameter update:
+#x_{new} = x_{old}-\alpha\frac{\hat{m}_t}{\sqrt{\hat{v}_t}+\epsilon}
+
+def adam_learn(alpha, beta1, beta2, epsilon, x, y, history, max_iters=10000):
+    mx, my = 0.0,0.0    # First moment
+    vx, vy = 0.0,0.0    # Second moment
+
+    for t in range(1, max_iters+1):
+        nabla_x, nabla_y = nabla_f(x,y)
+
+        # First moment update
+        mx= beta1*mx+(1-beta1)*nabla_x
+        my= beta1*my+(1-beta1)*nabla_y
+
+        # Second moment update
+        vx= beta2*vx+(1-beta2)*(nabla_x**2)
+        vy= beta2*vy+(1-beta2)*(nabla_y**2)
+
+        # Correction step
+        mx_hat = mx / (1 - beta1 ** t)
+        my_hat = my / (1 - beta1 ** t)
+
+        vx_hat = vx / (1 - beta2 ** t)
+        vy_hat = vy / (1 - beta2 ** t)
+
+        # Parameter update
+        x -= alpha * mx_hat / ((vx_hat ** 0.5) + epsilon)
+        y -= alpha * my_hat / ((vy_hat ** 0.5) + epsilon)
+
+        val = f(x, y)
+        history.append((x, y, val))
+
+        new_nabla_x, new_nabla_y = nabla_f(x, y)
+
+        if abs(new_nabla_x) < 1e-6 and abs(new_nabla_y) < 1e-6:
+            break
+        if abs(val) < 1e-6:
+            break
+        if abs(x) > 1e6 or abs(y) > 1e6:
+            print("Diverging...")
+            break
+
+    return x, y
+
+
+
 # MSE:
 # weights -> \frac{1}{n}\sum_{i=1}^n(y_i-(wx_i+b))^2
 # Gradients:
